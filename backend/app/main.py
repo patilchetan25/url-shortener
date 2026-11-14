@@ -26,9 +26,3 @@ app = FastAPI()
 @app.get("/health")
 def health():
     return {"status": "ok"}
-
-def generate_code() -> str:
-    code = ""                                 # Start with an empty string
-    for _ in range(CODE_LENGTH):              # Repeat 7 times
-        code = code + secrets.choice(ALPHABET)  # Add one random character
-    return code                               # e.g. "aB3xK9q"

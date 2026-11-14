@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel, HttpUrl
+
 import secrets
 import string
 
@@ -16,8 +17,8 @@ CODE_LENGTH = 7
 def generate_code() -> str:
     return "".join(secrets.choice(ALPHABET) for _ in range(CODE_LENGTH))
 
-
-
+BASE_URL = "http://localhost:8000"
+urls: dict[str, str] = {}
 
 
 
@@ -26,3 +27,10 @@ app = FastAPI()
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+@app.post("/shorten", response_model=ShortenResponse)
+def shorten(request: ShortenRequest) -> ShortenResponse:
+    code = generate_code()
+    urls[code] = str(request.url)
+    short_url = f"{BASE_URL}/{code}"
+    return ShortenResponse(code=code, short_url=short_url)

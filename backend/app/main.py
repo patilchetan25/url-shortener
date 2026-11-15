@@ -15,6 +15,7 @@ class ShortenResponse(BaseModel):
 ALPHABET = string.ascii_letters + string.digits
 CODE_LENGTH = 7
 
+
 def generate_code() -> str:
     return "".join(secrets.choice(ALPHABET) for _ in range(CODE_LENGTH))
 
@@ -32,6 +33,10 @@ def health():
 @app.post("/shorten", response_model=ShortenResponse)
 def shorten(request: ShortenRequest) -> ShortenResponse:
     code = generate_code()
+    while code in urls:
+        code = generate_code()
+    
+
     urls[code] = str(request.url)
     short_url = f"{BASE_URL}/{code}"
     return ShortenResponse(code=code, short_url=short_url)
